@@ -3,20 +3,19 @@
 
 Activity内Fragment数大于1时，滑动返回的是Fragment，否则滑动返回的是Activity。
 
-[原理分析](http://www.jianshu.com/p/626229ca4dc2)
-
 # 截图
 <img src="../gif/swipe.gif"/>
 
 # 如何使用
 1、项目下app的build.gradle中依赖：
 ````gradle
-// appcompat v7包是必须的
-compile 'me.yokeyword:fragmentation:最新版'
-compile 'me.yokeyword:fragmentation-swipeback:0.7.9'
+compile 'me.yokeyword:fragmentation:1.3.7'
+compile 'me.yokeyword:fragmentation-swipeback:1.3.7'
 ````
+
 2、如果Activity也需要支持SwipeBack，则继承SwipeBackActivity:
 ````java
+// 1.0.0起，SwipeBackActivity，可以自行通过实现＋委托形式 实现自己SupportActivity，再实现SwipeBackActivity
 public class SwipeBackSampleActivity extends SwipeBackActivity {}
 ````
 同时该Activity的theme添加如下属性：
@@ -26,6 +25,7 @@ public class SwipeBackSampleActivity extends SwipeBackActivity {}
 
 3、如果Fragment需要支持SwipeBack，则继承SwipeBackFragment:
 ````java
+// 1.0.0起，不强制要求继承SwipeBackFragment，可以自行通过实现＋委托形式 实现自己的SupportFragment，再实现SwipeBackFragment
 public class SwipeBackSampleFragment extends SwipeBackFragment {
  @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +39,12 @@ public class SwipeBackSampleFragment extends SwipeBackFragment {
 更多方法:
 ````java
   getSwipeBackLayout().setEdgeOrientation(SwipeBackLayout.EDGE_RIGHT); // EDGE_LEFT(默认),EDGE_ALL
+
+  getSwipeBackLayout().setParallaxOffset(0.0f - 1.0f); // （类iOS）滑动退出视觉差，默认0.3
+
+  setSwipeBackEnable(boolean enable); // 是否允许滑动
+  
+  getSwipeBackLayout().setSwipeAlpha(0.0f ~ 1.0f); // 滑动中，设置上一个页面View的阴影透明程度度，默认0.5f
 
   getSwipeBackLayout().addSwipeListener(new SwipeBackLayout.OnSwipeListener() {
             @Override
@@ -63,7 +69,7 @@ public class SwipeBackSampleFragment extends SwipeBackFragment {
      *
      * 可以通过复写该方法, 自由控制优先级
      *
-     * @return true: Activity可以滑动退出, 并且总是优先;  false: Activity不允许滑动退出
+     * @return true: Activity优先滑动退出;  false: Fragment优先滑动退出
      */
      @Override
      public boolean swipeBackPriority() {
